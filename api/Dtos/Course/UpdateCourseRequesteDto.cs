@@ -9,6 +9,7 @@ namespace api.Dtos.Course
   {
     public string Name { get; set; }
     public string Description { get; set; }
+    public IFormFile? File { get; set; } 
     public string Schedule { get; set; }
     public string Professor { get; set; }
   }

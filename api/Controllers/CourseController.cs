@@ -68,30 +68,49 @@ namespace api.Controllers
     }
 
     [HttpPut]
-    [Route("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCourseRequestDto courseDto)
+[Route("{id}")]
+public async Task<IActionResult> Update([FromRoute] int id, [FromForm] CreateCourseRequestDto courseDto)
+{
+    var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+    if (courseModel == null)
     {
-      var courseModel = await _context.Courses.FirstOrDefaultAsync(_event => _event.Id == id);
-      if (courseModel == null)
-      {
         return NotFound();
-      }
-      courseModel.Name = courseDto.Name;
-      courseModel.Description = courseDto.Description;
-      courseModel.Schedule = courseDto.Schedule;
-      courseModel.Professor = courseDto.Professor;
-
-      await _context.SaveChangesAsync();
-
-       // Send notification to all users subscribed to "event_notifications" topic
-      await FirebaseHelper.SendPushNotificationToTopicAsync(
-          topic: "course_notifications",
-          title: "Course Updated!",
-          body: $"The Course \"{courseModel.Name}\" has been updated!"
-      );
-
-      return Ok(courseModel.ToDto());
     }
+
+    // Actualiza los campos del curso
+    courseModel.Name = courseDto.Name;
+    courseModel.Description = courseDto.Description;
+    courseModel.Schedule = courseDto.Schedule;
+    courseModel.Professor = courseDto.Professor;
+
+    // Si se subió una nueva imagen, reemplaza la anterior
+    if (courseDto.File != null && courseDto.File.Length > 0)
+    {
+        var fileName = courseModel.Id.ToString() + Path.GetExtension(courseDto.File.FileName);
+        var filePath = Path.Combine(_imagePath, fileName);
+
+        // Opcional: Elimina la imagen anterior si ya existía
+        if (System.IO.File.Exists(filePath))
+        {
+            System.IO.File.Delete(filePath);
+        }
+
+        // Guarda la nueva imagen
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await courseDto.File.CopyToAsync(stream);
+        }
+
+        // Actualiza la URL en el modelo
+        courseModel.ImageUrl = fileName;
+    }
+
+    _context.Courses.Update(courseModel);
+    await _context.SaveChangesAsync();
+
+    return Ok(courseModel.ToDto());
+}
+
 
     [HttpDelete]
     [Route("{id}")]
