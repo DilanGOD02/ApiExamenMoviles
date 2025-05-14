@@ -41,6 +41,22 @@ namespace api.Controllers
             return Ok(student.ToDto());
         }
 
+        [HttpGet("course/{courseId}")]
+        public async Task<IActionResult> GetStudentsByCourseId([FromRoute] int courseId)
+        {
+            var students = await _context.Students
+                .Where(s => s.courseId == courseId)
+                .ToListAsync();
+
+            if (!students.Any())
+            {
+                return NotFound($"No se encontraron estudiantes para el curso con ID {courseId}");
+            }
+
+            var studentDtos = students.Select(student => student.ToDto());
+            return Ok(studentDtos);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStudentRequestDto studentDto)
         {

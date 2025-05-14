@@ -41,6 +41,7 @@ namespace api.Controllers
       return Ok(_course.ToDto());
     }
 
+
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CreateCourseRequestDto courseDto)
     {
