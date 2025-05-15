@@ -60,12 +60,27 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStudentRequestDto studentDto)
         {
+            // Buscar el curso por el courseId
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == studentDto.courseId);
+            if (course == null)
+            {
+                return NotFound($"No se encontró el curso con ID {studentDto.courseId}");
+            }
+
             var studentModel = studentDto.ToStudentFromCreateDto();
             await _context.Students.AddAsync(studentModel);
             await _context.SaveChangesAsync();
 
+            // Enviar notificación con el nombre del curso
+            await FirebaseHelper.SendPushNotificationToTopicAsync(
+                topic: "student_notifications",
+                title: "Student enrolled in the course!",
+                body: $"The student: \"{studentDto.Name}\", has enrolled in the course: \"{course.Name}\"!"
+            );
+
             return CreatedAtAction(nameof(GetById), new { id = studentModel.Id }, studentModel.ToDto());
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStudentRequestDto studentDto)
