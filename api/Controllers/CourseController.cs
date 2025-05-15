@@ -67,9 +67,9 @@ namespace api.Controllers
       return CreatedAtAction(nameof(getById), new { id = courseModel.Id }, courseModel.ToDto());
     }
 
-    [HttpPut]
+[HttpPut]
 [Route("{id}")]
-public async Task<IActionResult> Update([FromRoute] int id, [FromForm] CreateCourseRequestDto courseDto)
+public async Task<IActionResult> Update([FromRoute] int id, [FromForm] UpdateCourseRequestDto courseDto)
 {
     var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
     if (courseModel == null)
@@ -85,25 +85,37 @@ public async Task<IActionResult> Update([FromRoute] int id, [FromForm] CreateCou
 
     // Si se subió una nueva imagen, reemplaza la anterior
     if (courseDto.File != null && courseDto.File.Length > 0)
+{
+    // Validar extensión
+    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+    var fileExtension = Path.GetExtension(courseDto.File.FileName).ToLower();
+    
+    if (!allowedExtensions.Contains(fileExtension))
     {
-        var fileName = courseModel.Id.ToString() + Path.GetExtension(courseDto.File.FileName);
-        var filePath = Path.Combine(_imagePath, fileName);
-
-        // Opcional: Elimina la imagen anterior si ya existía
-        if (System.IO.File.Exists(filePath))
-        {
-            System.IO.File.Delete(filePath);
-        }
-
-        // Guarda la nueva imagen
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await courseDto.File.CopyToAsync(stream);
-        }
-
-        // Actualiza la URL en el modelo
-        courseModel.ImageUrl = fileName;
+        return BadRequest("Formato de imagen no válido");
     }
+
+    // Usar Guid para evitar caché
+    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+    var filePath = Path.Combine(_imagePath, fileName);
+
+    // Eliminar imagen anterior si existe
+    if (!string.IsNullOrEmpty(courseModel.ImageUrl))
+    {
+        var oldFilePath = Path.Combine(_imagePath, courseModel.ImageUrl);
+        if (System.IO.File.Exists(oldFilePath))
+        {
+            System.IO.File.Delete(oldFilePath);
+        }
+    }
+
+    using (var stream = new FileStream(filePath, FileMode.Create))
+    {
+        await courseDto.File.CopyToAsync(stream);
+    }
+
+    courseModel.ImageUrl = fileName;
+}
 
     _context.Courses.Update(courseModel);
     await _context.SaveChangesAsync();
