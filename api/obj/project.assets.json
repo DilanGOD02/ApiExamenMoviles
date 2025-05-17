@@ -5378,19 +5378,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Yeiler\\.nuget\\packages\\": {}
+    "C:\\Users\\Dilan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\UNA\\Ingenieria en Sistemas\\I Cuatri 2025\\Moviles\\Examen\\ApiExamenMoviles\\api\\api.csproj",
+      "projectUniqueName": "C:\\Users\\Dilan\\Documents\\GitHub\\ApiExamenMoviles\\api\\api.csproj",
       "projectName": "api",
-      "projectPath": "C:\\UNA\\Ingenieria en Sistemas\\I Cuatri 2025\\Moviles\\Examen\\ApiExamenMoviles\\api\\api.csproj",
-      "packagesPath": "C:\\Users\\Yeiler\\.nuget\\packages\\",
-      "outputPath": "C:\\UNA\\Ingenieria en Sistemas\\I Cuatri 2025\\Moviles\\Examen\\ApiExamenMoviles\\api\\obj\\",
+      "projectPath": "C:\\Users\\Dilan\\Documents\\GitHub\\ApiExamenMoviles\\api\\api.csproj",
+      "packagesPath": "C:\\Users\\Dilan\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Dilan\\Documents\\GitHub\\ApiExamenMoviles\\api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Yeiler\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Dilan\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -5468,7 +5468,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

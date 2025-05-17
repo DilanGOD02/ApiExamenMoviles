@@ -22,13 +22,16 @@ namespace api.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var students = await _context.Students.ToListAsync();
-            var studentDtos = students.Select(student => student.ToDto());
-            return Ok(studentDtos);
-        }
+      [HttpGet]
+public async Task<IActionResult> GetAll()
+{
+    var students = await _context.Students
+        .Include(s => s.Course) // ← importante
+        .ToListAsync();
+
+    var studentDetailsDto = students.Select(student => student.ToDetailsDto());
+    return Ok(studentDetailsDto);
+}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
