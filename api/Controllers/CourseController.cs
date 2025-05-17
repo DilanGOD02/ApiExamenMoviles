@@ -67,31 +67,62 @@ namespace api.Controllers
       return CreatedAtAction(nameof(getById), new { id = courseModel.Id }, courseModel.ToDto());
     }
 
-    [HttpPut]
-    [Route("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCourseRequestDto courseDto)
+[HttpPut]
+[Route("{id}")]
+public async Task<IActionResult> Update([FromRoute] int id, [FromForm] UpdateCourseRequestDto courseDto)
+{
+    var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+    if (courseModel == null)
     {
-      var courseModel = await _context.Courses.FirstOrDefaultAsync(_event => _event.Id == id);
-      if (courseModel == null)
-      {
         return NotFound();
-      }
-      courseModel.Name = courseDto.Name;
-      courseModel.Description = courseDto.Description;
-      courseModel.Schedule = courseDto.Schedule;
-      courseModel.Professor = courseDto.Professor;
-
-      await _context.SaveChangesAsync();
-
-       // Send notification to all users subscribed to "event_notifications" topic
-      await FirebaseHelper.SendPushNotificationToTopicAsync(
-          topic: "course_notifications",
-          title: "Course Updated!",
-          body: $"The Course \"{courseModel.Name}\" has been updated!"
-      );
-
-      return Ok(courseModel.ToDto());
     }
+
+    // Actualiza los campos del curso
+    courseModel.Name = courseDto.Name;
+    courseModel.Description = courseDto.Description;
+    courseModel.Schedule = courseDto.Schedule;
+    courseModel.Professor = courseDto.Professor;
+
+    // Si se subió una nueva imagen, reemplaza la anterior
+    if (courseDto.File != null && courseDto.File.Length > 0)
+{
+    // Validar extensión
+    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+    var fileExtension = Path.GetExtension(courseDto.File.FileName).ToLower();
+    
+    if (!allowedExtensions.Contains(fileExtension))
+    {
+        return BadRequest("Formato de imagen no válido");
+    }
+
+    // Usar Guid para evitar caché
+    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+    var filePath = Path.Combine(_imagePath, fileName);
+
+    // Eliminar imagen anterior si existe
+    if (!string.IsNullOrEmpty(courseModel.ImageUrl))
+    {
+        var oldFilePath = Path.Combine(_imagePath, courseModel.ImageUrl);
+        if (System.IO.File.Exists(oldFilePath))
+        {
+            System.IO.File.Delete(oldFilePath);
+        }
+    }
+
+    using (var stream = new FileStream(filePath, FileMode.Create))
+    {
+        await courseDto.File.CopyToAsync(stream);
+    }
+
+    courseModel.ImageUrl = fileName;
+}
+
+    _context.Courses.Update(courseModel);
+    await _context.SaveChangesAsync();
+
+    return Ok(courseModel.ToDto());
+}
+
 
     [HttpDelete]
     [Route("{id}")]
