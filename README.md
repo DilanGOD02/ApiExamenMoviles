@@ -5,7 +5,11 @@ Integrantes:
 - Dilan Gutierrez Hernandez
 
 
-1-Se crea una base de datos llamada ExamenMoviles utilizando el siguiente comando:
+Paso 1- Clonamos el repositorio en la carpeta de github o en la carpeta que desee con el siguiente comando:
+
+git clone https://github.com/DilanGOD02/ApiExamenMoviles.git
+
+Paso 2- Se crea una base de datos llamada ExamenMoviles utilizando el siguiente comando:
 
 CREATE DATABASE ExamenMoviles;
 
@@ -32,7 +36,7 @@ CREATE TABLE Students (
 );
 
 . 
-2- Creación de usuario en SQL Server
+Paso 3- Creación de usuario en SQL Server
 Se crea un usuario con los permisos necesarios para trabajar sobre la base de datos:
 
 -- Crear un login a nivel del servidor
@@ -49,7 +53,7 @@ ALTER ROLE db_owner ADD MEMBER usuarioExamen;
 ALTER ROLE db_owner ADD MEMBER usuarioExamen;
 
 
-3- Vamos a utilizar nuestro backend en .net donde vamos a configurar
+Paso 4- Vamos a utilizar nuestro backend en .net donde vamos a configurar
  nuestro la conexión con la base de datos en el archivo appsettings.json de esta forma:
 
 {
@@ -57,13 +61,13 @@ ALTER ROLE db_owner ADD MEMBER usuarioExamen;
     "DefaultConnection": "Server=localhost,1433;Database=ExamenMoviles;User Id=usuarioExamen;Password=1234;TrustServerCertificate=True;"
  }
 
-4- Para aplicar las migraciones y actualizar la base de datos, se utiliza el siguiente comando en la terminal de Visual Studio Code:
+Paso 5- Para aplicar las migraciones y actualizar la base de datos, se utiliza el siguiente comando en la terminal de Visual Studio Code:
 
 dotnet ef database update
 
-5- utilizar el comando dotnet build
+Paso 6- utilizar el comando dotnet build
 
 
-6-Finalmente, se inicia la aplicación en modo desarrollo con el siguiente comando:
+Paso 7-Finalmente, se inicia la aplicación en modo desarrollo con el siguiente comando:
 
 dotnet watch run
