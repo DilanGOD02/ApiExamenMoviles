@@ -47,14 +47,8 @@ namespace api.Controllers
             var students = await _context.Students
                 .Where(s => s.courseId == courseId)
                 .ToListAsync();
-
-            if (!students.Any())
-            {
-                return NotFound($"No se encontraron estudiantes para el curso con ID {courseId}");
-            }
-
-            var studentDtos = students.Select(student => student.ToDto());
-            return Ok(studentDtos);
+            var studentDtos = students.Select(student => student.ToDto()).ToList();
+            return Ok(studentDtos); 
         }
 
         [HttpPost]
