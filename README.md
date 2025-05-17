@@ -5,11 +5,14 @@ Integrantes:
 - Dilan Gutierrez Hernandez
 
 
+La rama principal en este repositorio es la main.
+
 Paso 1- Clonamos el repositorio en la carpeta de github o en la carpeta que desee con el siguiente comando:
 
 git clone https://github.com/DilanGOD02/ApiExamenMoviles.git
 
-Paso 2- Se crea una base de datos llamada ExamenMoviles utilizando el siguiente comando:
+
+Paso 2- -Se crea una base de datos llamada ExamenMoviles utilizando el siguiente comando:
 
 CREATE DATABASE ExamenMoviles;
 
@@ -65,9 +68,9 @@ Paso 5- Para aplicar las migraciones y actualizar la base de datos, se utiliza e
 
 dotnet ef database update
 
-Paso 6- utilizar el comando dotnet build
+Paso 6-- utilizar el comando dotnet build
 
 
-Paso 7-Finalmente, se inicia la aplicación en modo desarrollo con el siguiente comando:
+Paso 7--Finalmente, se inicia la aplicación en modo desarrollo con el siguiente comando:
 
 dotnet watch run
